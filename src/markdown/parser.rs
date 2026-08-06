@@ -111,7 +111,7 @@ impl MarkdownRenderer {
             }
 
             if line.trim().starts_with(MD_FENCE) {
-                Self::flush_table(&mut table_buffer, &mut blocks, &mut paragraph_lines);
+                Self::flush_pending(&mut table_buffer, &mut blocks, &mut paragraph_lines);
                 in_code_block = true;
                 code_lang = line.trim().chars().skip(3).collect::<String>();
                 continue;
@@ -505,6 +505,25 @@ impl MarkdownRenderer {
             }
         }
         false
+    }
+
+    /// Flushes a pending table *and* a pending paragraph before a new block
+    /// starts.
+    ///
+    /// `flush_table` alone returns early when no table is buffered, leaving
+    /// `paragraph_lines` untouched — so a caller that uses it as "end the
+    /// current block" silently keeps the paragraph pending, and it is emitted
+    /// by the tail of `parse_inner` *after* whatever block interrupted it.
+    fn flush_pending(
+        table_buffer: &mut Vec<String>,
+        blocks: &mut Vec<MarkdownBlock>,
+        paragraph_lines: &mut Vec<String>,
+    ) {
+        Self::flush_table(table_buffer, blocks, paragraph_lines);
+        if !paragraph_lines.is_empty() {
+            blocks.push(MarkdownBlock::Paragraph(paragraph_lines.clone()));
+            paragraph_lines.clear();
+        }
     }
 
     fn flush_table(

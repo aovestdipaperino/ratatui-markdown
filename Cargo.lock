@@ -2465,31 +2465,3 @@ checksum = "27bc9d5b815bc103f142aa054f561d9187d191692ec7c2d1e2b4737f8dbd7296"
 dependencies = [
  "zune-core",
 ]
-
-[[patch.unused]]
-name = "hikari-animation"
-version = "0.2.5"
-
-[[patch.unused]]
-name = "hikari-components"
-version = "0.2.5"
-
-[[patch.unused]]
-name = "hikari-icons"
-version = "0.2.5"
-
-[[patch.unused]]
-name = "hikari-palette"
-version = "0.2.5"
-
-[[patch.unused]]
-name = "hikari-theme"
-version = "0.2.5"
-
-[[patch.unused]]
-name = "aoba"
-version = "0.1.2"
-
-[[patch.unused]]
-name = "kirino"
-version = "0.2.0"

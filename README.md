@@ -3,6 +3,11 @@
 </div>
 
 <div align="center"><h1>ratatui-markdown</h1></div>
+
+<div align="center">
+  <em>This is a fork of <a href="https://github.com/celestia-island/ratatui-markdown">celestia-island/ratatui-markdown</a> v0.3.6,
+  carrying one parser fix. See <a href="FORK.md">FORK.md</a>.</em>
+</div>
 <div align="center">
   <strong>Markdown rendering, Mermaid diagrams, syntax highlighting, collapsible trees, and rich scroll widgets for ratatui</strong>
 </div>

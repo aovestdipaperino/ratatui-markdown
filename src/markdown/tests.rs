@@ -1,6 +1,6 @@
 use ratatui::{style::Style, text::Span};
 
-use super::MarkdownRenderer;
+use super::{MarkdownBlock, MarkdownRenderer};
 use crate::{
     constants::{BD_DL, BD_DR, BD_T_UP},
     theme::{RichTextTheme, ThemeConfig},
@@ -263,5 +263,39 @@ fn table_cjk_cells_aligned() {
         row_w, hline_w,
         "CJK row misaligned: row={:?} hline={:?}",
         row_text, hline
+    );
+}
+
+/// A fenced block may interrupt a paragraph with no blank line between them
+/// (CommonMark §4.5), and the paragraph must still come first. Before the fix
+/// the fence arm flushed only a pending *table*, so the paragraph stayed
+/// buffered and `parse_inner`'s tail emitted it after the code block.
+#[test]
+fn fence_directly_after_a_paragraph_keeps_document_order() {
+    let md = MarkdownRenderer::new(80);
+    let blocks = md.parse("Run it with:\n```sh\ncd local\n```\n");
+    assert!(
+        matches!(blocks.first(), Some(MarkdownBlock::Paragraph(p)) if p == &["Run it with:"]),
+        "paragraph must lead: {blocks:?}"
+    );
+    assert!(
+        matches!(blocks.get(1), Some(MarkdownBlock::CodeBlock { .. })),
+        "code block must follow: {blocks:?}"
+    );
+}
+
+/// The same for a table interrupted by a fence, so the added paragraph flush
+/// does not disturb the table path it wraps.
+#[test]
+fn fence_directly_after_a_table_keeps_document_order() {
+    let md = MarkdownRenderer::new(80);
+    let blocks = md.parse("| a | b |\n| - | - |\n| 1 | 2 |\n```sh\ntrue\n```\n");
+    assert!(
+        matches!(blocks.first(), Some(MarkdownBlock::Table { .. })),
+        "table must lead: {blocks:?}"
+    );
+    assert!(
+        matches!(blocks.get(1), Some(MarkdownBlock::CodeBlock { .. })),
+        "code block must follow: {blocks:?}"
     );
 }
