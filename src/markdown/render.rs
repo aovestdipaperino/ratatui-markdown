@@ -1,5 +1,4 @@
 use ratatui::{
-    prelude::Stylize,
     style::{Color, Modifier, Style},
     text::{Line, Span},
 };

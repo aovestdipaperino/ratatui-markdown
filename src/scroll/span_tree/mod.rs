@@ -1619,39 +1619,48 @@ mod render_tests {
         let col = tree.cursor_column;
 
         let entries = vec![
-            SpanTreeEntry::new("root", vec![vec![
-                Span::raw("  "),
-                Span::styled("#root label".to_string(), Style::default().fg(Color::Cyan)),
-            ]]),
-            SpanTreeEntry::new("child-mid", vec![
-                vec![
+            SpanTreeEntry::new(
+                "root",
+                vec![vec![
                     Span::raw("  "),
-                    Span::styled("├─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                    Span::raw("header"),
-                ],
+                    Span::styled("#root label".to_string(), Style::default().fg(Color::Cyan)),
+                ]],
+            ),
+            SpanTreeEntry::new(
+                "child-mid",
                 vec![
-                    Span::raw("  "),
-                    Span::styled("│  ├─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                    Span::raw("detail1"),
+                    vec![
+                        Span::raw("  "),
+                        Span::styled("├─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                        Span::raw("header"),
+                    ],
+                    vec![
+                        Span::raw("  "),
+                        Span::styled("│  ├─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                        Span::raw("detail1"),
+                    ],
+                    vec![
+                        Span::raw("  "),
+                        Span::styled("│  └─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                        Span::raw("detail2"),
+                    ],
                 ],
+            ),
+            SpanTreeEntry::new(
+                "child-last",
                 vec![
-                    Span::raw("  "),
-                    Span::styled("│  └─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                    Span::raw("detail2"),
+                    vec![
+                        Span::raw("  "),
+                        Span::styled("└─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                        Span::raw("header"),
+                    ],
+                    vec![
+                        Span::raw("  "),
+                        Span::styled("   └─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                        Span::raw("detail"),
+                    ],
                 ],
-            ]),
-            SpanTreeEntry::new("child-last", vec![
-                vec![
-                    Span::raw("  "),
-                    Span::styled("└─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                    Span::raw("header"),
-                ],
-                vec![
-                    Span::raw("  "),
-                    Span::styled("   └─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                    Span::raw("detail"),
-                ],
-            ]),
+            ),
         ];
 
         for entry in &entries {
@@ -1659,7 +1668,10 @@ mod render_tests {
                 assert!(
                     col < line.len(),
                     "entry {:?} line {} has {} spans, cursor_column={} out of bounds",
-                    entry.id, li, line.len(), col
+                    entry.id,
+                    li,
+                    line.len(),
+                    col
                 );
                 let span_content = &line[col].content;
                 let is_pure_space = span_content.chars().all(|c| c == ' ');
@@ -1799,7 +1811,8 @@ mod render_tests {
         let body1_connector_col = rows[1].find('├').unwrap_or(0);
         let body2_connector_col = rows[2].find('└').unwrap_or(0);
         assert_eq!(
-            body1_connector_col, body2_connector_col,
+            body1_connector_col,
+            body2_connector_col,
             "body lines should have connectors at same column: body1={:?} body2={:?}",
             rows[1].trim_end(),
             rows[2].trim_end()
@@ -1826,13 +1839,11 @@ mod render_tests {
 
         let entry_a = SpanTreeEntry::new(
             "a",
-            vec![
-                vec![
-                    Span::raw("  "),
-                    Span::styled("├─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                    Span::raw("header-a"),
-                ],
-            ],
+            vec![vec![
+                Span::raw("  "),
+                Span::styled("├─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                Span::raw("header-a"),
+            ]],
         );
         let entry_b = SpanTreeEntry::new(
             "b",
@@ -1897,10 +1908,7 @@ mod render_tests {
 
         let root = SpanTreeEntry::new(
             "root",
-            vec![vec![
-                Span::raw("  "),
-                Span::raw("#demiurge root"),
-            ]],
+            vec![vec![Span::raw("  "), Span::raw("#demiurge root")]],
         );
         let child = SpanTreeEntry::new(
             "child",
@@ -1975,12 +1983,12 @@ mod render_tests {
         let header_display_w: usize = header_str
             .split("├─")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
         let body_display_w: usize = body1_str
             .split("├─")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
         assert!(
             body_display_w > header_display_w,
@@ -2046,17 +2054,17 @@ mod render_tests {
         let header_text_col: usize = header
             .split("#demiurge")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
         let body0_text_col: usize = body0
             .split("…thinking")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
         let body1_text_col: usize = body1
             .split("hubris::task_decompose")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
 
         assert_eq!(
@@ -2141,12 +2149,12 @@ mod render_tests {
         let a_connector_col: usize = a_header
             .split("├─")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
         let b_connector_col: usize = b_header
             .split("└─")
             .next()
-            .map(|s| unicode_width::UnicodeWidthStr::width(s))
+            .map(unicode_width::UnicodeWidthStr::width)
             .unwrap_or(0);
         assert_eq!(
             a_connector_col, b_connector_col,
@@ -2160,44 +2168,62 @@ mod render_tests {
         let mut tree = SpanTree::new()
             .with_cursor_style(Span::styled("▸ ", Style::default()), Span::raw("  "));
 
-        let root = SpanTreeEntry::new("root", vec![vec![
-            Span::raw("  "),
-            Span::styled("#demiurge root".to_string(), Style::default().fg(Color::Cyan)),
-        ]]);
-        let child_mid = SpanTreeEntry::new("child-mid", vec![
-            vec![
+        let root = SpanTreeEntry::new(
+            "root",
+            vec![vec![
                 Span::raw("  "),
-                Span::styled("├─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                Span::styled("#demiurge.001 active".to_string(), Style::default().fg(Color::Cyan)),
-            ],
+                Span::styled(
+                    "#demiurge root".to_string(),
+                    Style::default().fg(Color::Cyan),
+                ),
+            ]],
+        );
+        let child_mid = SpanTreeEntry::new(
+            "child-mid",
             vec![
-                Span::raw("  "),
-                Span::styled("│  ├─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                Span::raw("thinking..."),
+                vec![
+                    Span::raw("  "),
+                    Span::styled("├─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                    Span::styled(
+                        "#demiurge.001 active".to_string(),
+                        Style::default().fg(Color::Cyan),
+                    ),
+                ],
+                vec![
+                    Span::raw("  "),
+                    Span::styled("│  ├─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                    Span::raw("thinking..."),
+                ],
+                vec![
+                    Span::raw("  "),
+                    Span::styled("│  └─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                    Span::raw("hubris::task_decompose"),
+                ],
             ],
+        );
+        let child_last = SpanTreeEntry::new(
+            "child-last",
             vec![
-                Span::raw("  "),
-                Span::styled("│  └─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                Span::raw("hubris::task_decompose"),
+                vec![
+                    Span::raw("  "),
+                    Span::styled("└─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                    Span::styled(
+                        "#demiurge.002 idle".to_string(),
+                        Style::default().fg(Color::Cyan),
+                    ),
+                ],
+                vec![
+                    Span::raw("  "),
+                    Span::styled("   └─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                    Span::raw("streaming..."),
+                ],
+                vec![
+                    Span::raw("  "),
+                    Span::styled("   └─ ".to_string(), Style::default().fg(Color::DarkGray)),
+                    Span::raw("status line"),
+                ],
             ],
-        ]);
-        let child_last = SpanTreeEntry::new("child-last", vec![
-            vec![
-                Span::raw("  "),
-                Span::styled("└─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                Span::styled("#demiurge.002 idle".to_string(), Style::default().fg(Color::Cyan)),
-            ],
-            vec![
-                Span::raw("  "),
-                Span::styled("   └─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                Span::raw("streaming..."),
-            ],
-            vec![
-                Span::raw("  "),
-                Span::styled("   └─ ".to_string(), Style::default().fg(Color::DarkGray)),
-                Span::raw("status line"),
-            ],
-        ]);
+        );
         tree.set_entries(vec![root, child_mid, child_last]);
         tree.set_selected("child-mid");
         let rows = render_to_lines(&mut tree, 70, 10);

@@ -48,4 +48,16 @@ be retired in favour of it.
   and a fence after a table (so the added flush does not disturb the path it
   wraps).
 
-Nothing else. All 299 upstream tests still pass.
+Nothing else to the renderer. All 299 upstream tests still pass, plus the
+two added here.
+
+## Moving to ratatui 0.30
+
+`v0.3.6` requires `ratatui ^0.29`, which pins every dependent to
+`unicode-width =0.2.0` and blocks the 0.30 line. The fork now requires
+`^0.30`. The library needed no change beyond dropping two `prelude::Stylize`
+imports that 0.30 makes redundant; the churn was all in the dev-only
+examples, where `crossterm` moves to `^0.29` to match the one ratatui
+re-exports and `ratatui-image` to `11` (whose `Picker::font_size` returns a
+`FontSize` rather than a tuple, and whose `new_protocol` takes a `Size`
+rather than a `Rect`).

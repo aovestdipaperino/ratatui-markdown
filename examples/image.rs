@@ -9,7 +9,6 @@ use ratatui::{
         terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     },
     layout::Rect,
-    prelude::Stylize,
     style::{Color, Style},
     text::{Line, Span},
     widgets::{
@@ -33,7 +32,8 @@ fn fix_protocol_override(picker: &mut Picker) {
 }
 
 fn safe_font_size(picker: &Picker) -> (u16, u16) {
-    let (fw, fh) = picker.font_size();
+    let size = picker.font_size();
+    let (fw, fh) = (size.width, size.height);
     if fw == 0 || fh == 0 {
         (8, 16)
     } else {
@@ -468,7 +468,7 @@ fn main() -> anyhow::Result<()> {
                         si.scaled.clone()
                     };
 
-                    let rect_for_proto = Rect::new(0, 0, vis_w, vis_h);
+                    let rect_for_proto = ratatui::layout::Size::new(vis_w, vis_h);
                     match state
                         .picker
                         .new_protocol(img_for_proto, rect_for_proto, Resize::Fit(None))
