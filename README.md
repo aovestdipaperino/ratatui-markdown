@@ -1,3 +1,5 @@
+[![GitHub stars](https://img.shields.io/github/stars/aovestdipaperino/ratatui-markdown?logo=github&color=brightgreen)](https://github.com/aovestdipaperino/ratatui-markdown/stargazers)
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/celestia-island/ratatui-markdown/dev/examples/logo.webp" alt="ratatui-markdown logo" width="200" />
 </div>
